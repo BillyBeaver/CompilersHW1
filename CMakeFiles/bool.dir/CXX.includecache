@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/kunstraucher/Downloads/Timcheck_Stephen_Compilers1/main.cpp
+iostream
+-
+ast.hpp
+/home/kunstraucher/Downloads/Timcheck_Stephen_Compilers1/ast.hpp
+eval.hpp
+/home/kunstraucher/Downloads/Timcheck_Stephen_Compilers1/eval.hpp
+print.hpp
+/home/kunstraucher/Downloads/Timcheck_Stephen_Compilers1/print.hpp
+
