@@ -5,6 +5,7 @@
 #include "eval.h"
 #include "print.h"
 #include "type.h"
+#include "lexer.h"
 
 int main() {
 	Context cxt;
@@ -87,6 +88,24 @@ int main() {
 			std::cout << eval(a.at(i));
 			std::cout << "\n\n\n";
 		}
+	}
+
+	
+	std::cout << "\n\nLEXER, type 'q' to quit\n\n";
+	Lexer l;
+
+	std::string rsp;
+	//std::cin >> rsp;
+	rsp = "0+1-2*3/4%5   (!true || false && (true)) ? 20 : -10    10 < 20 <=30 >= 1 == (50) #comment\n\n";
+	std::cout << rsp;
+	while(rsp != "q") {
+		l = Lexer(rsp.c_str());
+		while(!l.Eof()) {
+			Token* t = l.next();
+			std::cout << t->print();
+			std::cout << "\n";
+		}
+		std::cin >> rsp;
 	}
 
 	return 0;
