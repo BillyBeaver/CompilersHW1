@@ -2,8 +2,6 @@
 #define LEXER_H
 
 #include <iostream>
-#include <string>
-#include <cstring>
 #include "and_expr.h"
 #include "or_expr.h"
 #include "bool_expr.h"
@@ -53,21 +51,21 @@ enum Token_Kind {
 
 class Token {
 private:
-	int name;
+	Token_Kind name;
 	int value;
 
 public:
 	Token() { }
-	Token(int n) {
+	Token(Token_Kind n) {
 		name = n;
 		value = 0;
 	}
-	Token(int n, int val) {
+	Token(Token_Kind n, int val) {
 		name = n;
 		value = val;
 	}
 	~Token() { }
-	int getName() {
+	Token_Kind getName() {
 		return name;
 	}
 	int getValue() {
@@ -75,7 +73,7 @@ public:
 	}
 
 	std::string print() {
-		std::string str = std::to_string(long (value));
+		std::string str = std::to_string(long long (value));
 		switch(name) {
 		case EOF_TOKEN:
 			return "EOF_TOKEN";
@@ -157,21 +155,21 @@ public:
 class Punc_Token : public Token {
 public:
 	Punc_Token() { }
-	Punc_Token(int n) : Token(n) { }
+	Punc_Token(Token_Kind n) : Token(n) { }
 	~Punc_Token() { }
 };
 
 class Int_Token : public Token {
 public:
 	Int_Token() { }
-	Int_Token(int n, int val) : Token(n, val) { }
+	Int_Token(Token_Kind n, int val) : Token(n, val) { }
 	~Int_Token() { }
 };
 
 class Bool_Token : public Token {
 public:
 	Bool_Token() { }
-	Bool_Token(int n, bool val) : Token(n, val) { }
+	Bool_Token(Token_Kind n, bool val) : Token(n, val) { }
 	~Bool_Token() { }
 };
 
@@ -339,12 +337,12 @@ public:
 				break;
 			case '-':
 				consume();
-				if(isdigit(lookahead())) {
-					return new Punc_Token(NEG_TOKEN);
-				}
-				else {
+				//if(isdigit(lookahead())) {
+				//	return new Punc_Token(NEG_TOKEN);
+				//}
+				//else {
 					return new Punc_Token(SUB_TOKEN);
-				}
+				//}
 				break;
 			case '*':
 				consume();
@@ -402,7 +400,7 @@ public:
 				continue;
 			}
 		}
-		return NULL;
+		return new Punc_Token(EOF_TOKEN);
 	}
 };
 
