@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <vector>
 #include <math.h>
 
@@ -6,6 +7,7 @@
 #include "print.h"
 #include "type.h"
 #include "lexer.h"
+#include "parser.h"
 
 int main() {
 	Context cxt;
@@ -90,13 +92,17 @@ int main() {
 		}
 	}
 
-	
-	std::cout << "\n\nLEXER, type 'q' to quit\n\n";
+
+	std::cout << "\n\nLEXER and PARSER, type 'q' to quit\n\n";
 	Lexer l;
+
+	std::vector<Token*> line = std::vector<Token*>();
 
 	std::string rsp;
 	//std::cin >> rsp;
-	rsp = "0+1-2*3/4%5   (!true || false && (true)) ? 20 : -10    10 < 20 <=30 >= 1 == (50) #comment\n\n";
+	rsp = "(0+1-2*3/4%5) > ((!true || false && (true)) ? 20 : -10) #comment\n\n";
+	//rsp = "(!true || false && (true)) ? 20 : -10    10 < 20 <=30 >= 1 == (50) #comment\n\n";
+	//rsp = "(!true || false && (true)) ? 20 : 10";
 	std::cout << rsp;
 	while(rsp != "q") {
 		l = Lexer(rsp.c_str());
@@ -104,8 +110,29 @@ int main() {
 			Token* t = l.next();
 			std::cout << t->print();
 			std::cout << "\n";
+			line.push_back(t);
 		}
-		std::cin >> rsp;
+		line.push_back(new Punc_Token(EOF_TOKEN));
+		Parser* p = new Parser(line, cxt);
+		
+		Expr* e = p->expression();
+		std::cout << "HERE\n";
+		print(e);
+		std::cout << "\n == ";
+		if(e->check(cxt) == &cxt.bool_type) {
+			if(eval(e))
+				std::cout << "true";
+			else
+				std::cout << "false";
+			std::cout << "\n\n\n";
+		}
+		else {
+			std::cout << eval(e);
+			std::cout << "\n\n\n";
+		}
+		//std::cin >> rsp;
+		std::getline(std::cin, rsp);
+		line.clear();
 	}
 
 	return 0;
