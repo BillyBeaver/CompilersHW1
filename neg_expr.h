@@ -16,6 +16,8 @@ public:
 	Type* check(Context& cxt) {
 		if(e1->check(cxt) == &cxt.int_type)
 			return &cxt.int_type;
+		else if(e1->check(cxt) == &cxt.bool_type)
+			return &cxt.bool_type;
 		else
 			assert(false && "Negation Expression Type Error . . .");
 	}
