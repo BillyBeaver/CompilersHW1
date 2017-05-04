@@ -21,6 +21,8 @@
 #include "div_expr.h"
 #include "mod_expr.h"
 #include "neg_expr.h"
+#include "symbol_table.h"
+#include <ctype.h>
 
 enum Token_Kind {
 	EOF_TOKEN,
@@ -46,7 +48,9 @@ enum Token_Kind {
 	LPAR_TOKEN,
 	RPAR_TOKEN,
 	COL_TOKEN,
-	OCTO_TOKEN
+	OCTO_TOKEN,
+	VAR_TOKEN,
+	ASGN_TOKEN
 };
 
 class Token {
@@ -148,6 +152,12 @@ public:
 		case OCTO_TOKEN:
 			return "OCTO_TOKEN";
 			break;
+		case VAR_TOKEN:
+			return "VAR_TOKEN";
+			break;
+		case ASGN_TOKEN:
+			return "ASGN_TOKEN";
+			break;
 		}
 	}
 };
@@ -171,6 +181,17 @@ public:
 	Bool_Token() { }
 	Bool_Token(Token_Kind n, bool val) : Token(n, val) { }
 	~Bool_Token() { }
+};
+
+class Var_Token : public Token {
+private:
+	std::string name;
+public:
+	Var_Token() { }
+	Var_Token(Token_Kind n, std::string val) : Token(n) { 
+		name = val;
+	}
+	~Var_Token() { }
 };
 
 class Lexer {
@@ -236,7 +257,8 @@ public:
 					return new Punc_Token(EQL_TOKEN);
 				}
 				else {
-					assert(false && "Syntax Error, Double Equal Sign (Expected Single)");
+					return new Punc_Token(ASGN_TOKEN);
+					//assert(false && "Syntax Error, Double Equal Sign (Expected Single)");
 				}
 				break;
 			case '!':
@@ -279,7 +301,75 @@ public:
 					assert(false && "Syntax Error, Single Pipe (Expected Double)");
 				}
 				break;
-
+			
+			case 'A':
+			case 'B':
+			case 'C':
+			case 'D':
+			case 'E':
+			case 'F':
+			case 'G':
+			case 'H':
+			case 'I':
+			case 'J':
+			case 'K':
+			case 'L':
+			case 'M':
+			case 'N':
+			case 'O':
+			case 'P':
+			case 'Q':
+			case 'R':
+			case 'S':
+			case 'T':
+			case 'U':
+			case 'V':
+			case 'W':
+			case 'X':
+			case 'Y':
+			case 'Z':
+			case 'a':
+			case 'b':
+			case 'c':
+			case 'd':
+			case 'e':
+			case 'f':
+			case 'g':
+			case 'h':
+			case 'i':
+			case 'j':
+			case 'k':
+			case 'l':
+			case 'm':
+			case 'n':
+			case 'o':
+			case 'p':
+			case 'q':
+			case 'r':
+			case 's':
+			case 't':
+			case 'u':
+			case 'v':
+			case 'w':
+			case 'x':
+			case 'y':
+			case 'z':
+			case '_':
+				iter = first;
+				while(!Eof() && (isdigit(lookahead()) || isalpha(lookahead()))) {
+					consume();
+				}
+				str = std::string(iter, first);
+				//sm.addSymbol(str, 0);
+				//return new Int_Token(INT_TOKEN, n);
+				if(str == "false")
+					return new Bool_Token(BOOL_TOKEN, false);
+				else if(str == "true")
+					return new Bool_Token(BOOL_TOKEN, true);
+				else
+					return new Var_Token(VAR_TOKEN, str);
+				break;
+			/*
 			case 't':
 				consume();
 				if(lookahead() == 'r') {
@@ -302,7 +392,8 @@ public:
 					assert(false && "Syntax Error, 'true' expected");
 				}
 				break;
-			case 'f':
+				*/
+			/*case 'f':
 				consume();
 				if(lookahead() == 'a') {
 					consume();
@@ -330,7 +421,7 @@ public:
 					assert(false && "Syntax Error, 'false' expected");
 				}
 				break;
-
+				*/
 			case '+':
 				consume();
 				return new Punc_Token(ADD_TOKEN);
