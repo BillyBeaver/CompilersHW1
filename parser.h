@@ -6,11 +6,13 @@
 
 #include "translator.h"
 #include "lexer.h"
+#include "symbol_table.h"
 
 class Parser {
 private:
 	std::vector<Token*> tokens;
 	Translator sem;
+	Symbol_table sm;
 
 public:
 	Parser() { }
@@ -62,7 +64,19 @@ public:
 	}
 
 	Expr* expression() {
+		//return assignmentExpression();
 		return conditionalExpression();
+	}
+
+	Expr* assignmentExpression() {
+		Expr* e1 = conditionalExpression();
+		while(true) {
+			if(Token* t = match_if(VAR_TOKEN)) {
+				Expr* e2 = expression();
+				//e1 = sem.onAssignment(e1, e2);
+				//sm.addSymbol();
+			}
+		}
 	}
 
 	Expr* conditionalExpression() {
